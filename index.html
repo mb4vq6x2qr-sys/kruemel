@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kruemel – Torten bestellen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --creme: #fdf6ee;
+      --karte: #ffffff;
+      --schoko: #4a2e22;
+      --schoko-hell: #8a6a5a;
+      --rosa: #e8a1a8;
+      --rosa-hell: #fbe7e8;
+      --akzent: #c8566a;
+      --rand: #ecdccf;
+      --fehler: #b3261e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Nunito', system-ui, sans-serif;
+      background: var(--creme);
+      color: var(--schoko);
+      line-height: 1.5;
+      background-image: radial-gradient(var(--rand) 1.5px, transparent 1.5px);
+      background-size: 22px 22px;
+    }
+    header { text-align: center; padding: 48px 16px 8px; }
+    .logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 800;
+      font-size: clamp(44px, 10vw, 68px);
+      letter-spacing: -1px;
+      margin: 0;
+      line-height: 1;
+    }
+    .logo span { color: var(--akzent); }
+    .untertitel { margin: 10px 0 0; color: var(--schoko-hell); font-size: 18px; }
+
+    main { max-width: 620px; margin: 24px auto 64px; padding: 0 16px; }
+    .karte {
+      background: var(--karte);
+      border-radius: 24px;
+      padding: 28px 22px;
+      box-shadow: 0 10px 30px rgba(74, 46, 34, .08);
+      border: 1px solid var(--rand);
+    }
+    @media (min-width: 560px) { .karte { padding: 36px 40px; } }
+
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      margin: 28px 0 4px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    h2:first-of-type { margin-top: 0; }
+    h2 .nr {
+      display: inline-grid; place-items: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--rosa-hell); color: var(--akzent);
+      font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 700;
+    }
+
+    /* Typ-Auswahl als Kacheln */
+    .typen { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .typ input { position: absolute; opacity: 0; pointer-events: none; }
+    .typ label {
+      display: block; text-align: center; cursor: pointer;
+      padding: 16px 8px; border-radius: 16px;
+      border: 2px solid var(--rand); background: var(--creme);
+      font-weight: 700; transition: .15s;
+    }
+    .typ .emoji { display: block; font-size: 30px; margin-bottom: 4px; }
+    .typ label:hover { border-color: var(--rosa); }
+    .typ input:checked + label { border-color: var(--akzent); background: var(--rosa-hell); }
+    .typ input:focus-visible + label { outline: 3px solid var(--rosa); outline-offset: 2px; }
+
+    .feld { margin-top: 16px; }
+    .feld label { display: block; font-weight: 700; margin-bottom: 4px; }
+    .feld .hilfe { font-weight: 400; color: var(--schoko-hell); font-size: 14px; }
+    .zeile { display: grid; gap: 0 14px; }
+    @media (min-width: 480px) { .zeile { grid-template-columns: 1fr 1fr; } }
+
+    input, select, textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--rand); border-radius: 12px;
+      font: inherit; font-size: 16px; color: var(--schoko);
+      background: #fff;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--akzent); box-shadow: 0 0 0 3px var(--rosa-hell); }
+
+    .hinweis {
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+      background: var(--rosa-hell); font-size: 15px;
+    }
+    .versteckt { display: none !important; }
+
+    /* Foto-Upload */
+    .foto-zone {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; padding: 22px 14px; text-align: center; cursor: pointer;
+      border: 2px dashed var(--rand); border-radius: 16px; background: var(--creme);
+      transition: .15s;
+    }
+    .foto-zone:hover, .foto-zone.drueber { border-color: var(--akzent); background: var(--rosa-hell); }
+    .foto-zone .emoji { font-size: 32px; }
+    .foto-zone small { color: var(--schoko-hell); }
+    .foto-vorschau { position: relative; display: inline-block; margin-top: 4px; }
+    .foto-vorschau img { max-width: 100%; max-height: 260px; border-radius: 14px; display: block; border: 1px solid var(--rand); }
+    button.foto-weg {
+      position: absolute; top: 8px; right: 8px; width: auto; margin: 0;
+      padding: 6px 12px; font-size: 14px; border-radius: 999px;
+      background: rgba(74, 46, 34, .85);
+    }
+
+    .datenschutz { font-size: 13px; color: var(--schoko-hell); margin-top: 22px; }
+
+    button {
+      width: 100%; margin-top: 14px; padding: 16px;
+      background: var(--akzent); color: #fff;
+      border: none; border-radius: 14px;
+      font: inherit; font-size: 18px; font-weight: 700;
+      cursor: pointer; transition: .15s;
+    }
+    button:hover { filter: brightness(1.07); }
+    button:disabled { opacity: .6; cursor: wait; }
+
+    #meldung { margin-top: 16px; text-align: center; font-weight: 700; }
+    #meldung.fehler { color: var(--fehler); }
+
+    .danke { text-align: center; padding: 24px 0; }
+    .danke .gross { font-size: 56px; }
+    .danke h2 { justify-content: center; font-size: 26px; }
+
+    footer { text-align: center; color: var(--schoko-hell); font-size: 14px; padding-bottom: 32px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="logo">Kruemel<span>.</span></h1>
+    <p class="untertitel">Handgemachte Torten &amp; Süsses – jetzt bestellen</p>
+  </header>
+
+  <main>
+    <div class="karte">
+      <form id="bestellung" novalidate>
+
+        <h2><span class="nr">1</span> Was darf's sein?</h2>
+        <div class="typen">
+          <div class="typ"><input type="radio" name="Typ" id="t1" value="Motivtorte" required><label for="t1"><span class="emoji">🎂</span>Motivtorte</label></div>
+          <div class="typ"><input type="radio" name="Typ" id="t2" value="Fototorte"><label for="t2"><span class="emoji">📸</span>Fototorte</label></div>
+          <div class="typ"><input type="radio" name="Typ" id="t3" value="Cupcakes"><label for="t3"><span class="emoji">🧁</span>Cupcakes</label></div>
+          <div class="typ"><input type="radio" name="Typ" id="t4" value="Cakepops"><label for="t4"><span class="emoji">🍭</span>Cakepops</label></div>
+        </div>
+
+        <div id="foto-hinweis" class="hinweis versteckt">
+          📸 Für die Fototorte lade bitte unten bei „Foto vom Motiv" das gewünschte Bild hoch.
+        </div>
+
+        <h2><span class="nr">2</span> Details</h2>
+        <div class="zeile">
+          <div class="feld">
+            <label for="groesse">Grösse <span class="hilfe">(z. B. 20 cm / 12 Pers.)</span></label>
+            <input id="groesse" name="Grösse">
+          </div>
+          <div class="feld">
+            <label for="anzahl">Anzahl</label>
+            <input id="anzahl" name="Anzahl" type="number" min="1" value="1" required>
+          </div>
+        </div>
+        <div class="feld">
+          <label for="motiv">Motiv / Thema <span class="hilfe">(z. B. Einhorn, Fussball, „Happy Birthday Lea")</span></label>
+          <input id="motiv" name="Motiv">
+        </div>
+        <div class="feld">
+          <label>Foto vom Motiv <span class="hilfe">(optional – Vorlage, Idee oder Foto für die Fototorte)</span></label>
+          <label class="foto-zone" id="foto-zone" for="foto-datei">
+            <span class="emoji">🖼️</span>
+            <strong>Foto auswählen</strong>
+            <small>oder hierher ziehen / mit Cmd+V bzw. Strg+V einfügen</small>
+          </label>
+          <input type="file" id="foto-datei" accept="image/*" class="versteckt">
+          <div id="foto-vorschau" class="foto-vorschau versteckt">
+            <img id="foto-bild" alt="Vorschau des Motiv-Fotos">
+            <button type="button" class="foto-weg" id="foto-weg">✕ Entfernen</button>
+          </div>
+        </div>
+        <div class="feld">
+          <label for="fuellung">Füllung <span class="hilfe">(z. B. Schoko, Vanille, Erdbeer)</span></label>
+          <input id="fuellung" name="Füllung">
+        </div>
+        <div class="feld">
+          <label for="datum">Wann brauchst du es? <span class="hilfe">(mind. 10 Tage im Voraus)</span></label>
+          <input id="datum" name="Lieferdatum" type="date" required>
+        </div>
+
+        <h2><span class="nr">3</span> Deine Kontaktdaten</h2>
+        <div class="feld">
+          <label for="name">Name</label>
+          <input id="name" name="Name" autocomplete="name" required>
+        </div>
+        <div class="zeile">
+          <div class="feld">
+            <label for="tel">Telefon</label>
+            <input id="tel" name="Tel" type="tel" autocomplete="tel" required>
+          </div>
+          <div class="feld">
+            <label for="email">E-Mail</label>
+            <input id="email" name="E-Mail" type="email" autocomplete="email" required>
+          </div>
+        </div>
+        <div class="feld">
+          <label for="bemerkungen">Bemerkungen <span class="hilfe">(Allergien, Wünsche, Abholung/Lieferung …)</span></label>
+          <textarea id="bemerkungen" name="Bemerkungen" rows="3"></textarea>
+        </div>
+
+        <!-- Spam-Falle: für Menschen unsichtbar -->
+        <input name="website" class="versteckt" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p class="datenschutz">Deine Daten werden nur zur Bearbeitung deiner Bestellung verwendet. Die Bestellung ist erst verbindlich, wenn ich sie dir bestätigt habe – ich melde mich innert 24 h mit Preis und Details.</p>
+        <button type="submit">Bestellung senden 🎂</button>
+        <div id="meldung" role="status"></div>
+      </form>
+
+      <div id="danke" class="danke versteckt">
+        <div class="gross">🎉</div>
+        <h2>Danke für deine Bestellung!</h2>
+        <p>Ich melde mich innert 24 Stunden bei dir, um alles zu bestätigen.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>© Kruemel</footer>
+
+  <script>
+    // ← Hier die Web-App-URL aus Apps Script einsetzen (Bereitstellen → Web-App)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbze3D0aNCrKxudN_GqrcUY8OFuloUeKL6ngCHVQh4sx7RIJjRWc5ufhADUrsqP8x2Xi/exec';
+    const VORLAUF_TAGE = 10;
+
+    const form = document.getElementById('bestellung');
+    const meldung = document.getElementById('meldung');
+
+    // Frühestes Datum: heute + 10 Tage
+    const min = new Date();
+    min.setDate(min.getDate() + VORLAUF_TAGE);
+    const minText = min.toISOString().slice(0, 10);
+    document.getElementById('datum').min = minText;
+
+    // Foto-Hinweis nur bei Fototorte zeigen
+    form.querySelectorAll('[name=Typ]').forEach(r =>
+      r.addEventListener('change', () =>
+        document.getElementById('foto-hinweis').classList.toggle('versteckt', r.value !== 'Fototorte' || !r.checked)));
+
+    // ===== Foto: auswählen, hineinziehen oder einfügen =====
+    let fotoDaten = null; // verkleinertes Bild als data:image/jpeg;base64,...
+    const zone = document.getElementById('foto-zone');
+    const dateiFeld = document.getElementById('foto-datei');
+
+    function bildLaden(datei) {
+      return new Promise((ok, fehler) => {
+        const img = new Image();
+        img.onload = () => ok(img);
+        img.onerror = fehler;
+        img.src = URL.createObjectURL(datei);
+      });
+    }
+
+    // Grosse Handyfotos auf max. 1600 px verkleinern → schneller Upload
+    async function fotoUebernehmen(datei) {
+      if (!datei || !datei.type.startsWith('image/')) return zeigeFehler('Bitte nur Bilddateien hochladen.');
+      try {
+        const img = await bildLaden(datei);
+        const faktor = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.naturalWidth * faktor);
+        canvas.height = Math.round(img.naturalHeight * faktor);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        fotoDaten = canvas.toDataURL('image/jpeg', 0.85);
+        document.getElementById('foto-bild').src = fotoDaten;
+        document.getElementById('foto-vorschau').classList.remove('versteckt');
+        zone.classList.add('versteckt');
+        meldung.textContent = '';
+      } catch {
+        zeigeFehler('Dieses Bild konnte nicht geladen werden. Bitte versuch ein anderes (JPG oder PNG).');
+      }
+    }
+
+    dateiFeld.addEventListener('change', () => fotoUebernehmen(dateiFeld.files[0]));
+
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drueber'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drueber'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drueber');
+      fotoUebernehmen(e.dataTransfer.files[0]);
+    });
+
+    document.addEventListener('paste', e => {
+      const item = [...e.clipboardData.items].find(i => i.type.startsWith('image/'));
+      if (item) { e.preventDefault(); fotoUebernehmen(item.getAsFile()); }
+    });
+
+    document.getElementById('foto-weg').addEventListener('click', () => {
+      fotoDaten = null;
+      dateiFeld.value = '';
+      document.getElementById('foto-vorschau').classList.add('versteckt');
+      zone.classList.remove('versteckt');
+    });
+
+    function zeigeFehler(text) {
+      meldung.textContent = text;
+      meldung.className = 'fehler';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      meldung.textContent = '';
+
+      if (!form.querySelector('[name=Typ]:checked')) return zeigeFehler('Bitte wähle zuerst aus, was du bestellen möchtest.');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      if (document.getElementById('datum').value < minText) return zeigeFehler('Bitte wähle ein Datum mindestens 10 Tage im Voraus.');
+      if (API_URL.startsWith('HIER')) return zeigeFehler('Entwurf: Die Web-App-URL ist noch nicht eingetragen.');
+
+      const button = form.querySelector('button');
+      button.disabled = true;
+      button.textContent = 'Wird gesendet …';
+
+      try {
+        const daten = new URLSearchParams(new FormData(form));
+        if (fotoDaten) daten.set('foto', fotoDaten);
+        const res = await fetch(API_URL, { method: 'POST', body: daten });
+        if (!res.ok) throw new Error(res.status);
+        form.classList.add('versteckt');
+        document.getElementById('danke').classList.remove('versteckt');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        zeigeFehler('Da ging etwas schief. Bitte versuch es nochmal oder melde dich direkt.');
+        button.disabled = false;
+        button.textContent = 'Bestellung senden 🎂';
+      }
+    });
+  </script>
+</body>
+</html>
