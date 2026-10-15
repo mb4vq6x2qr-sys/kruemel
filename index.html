@@ -157,13 +157,40 @@
       border: 8px solid #fff;
     }
     .hero-bild .bogen img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Hero-Slider: Kreis wächst von unten (wie eine Torte, die aufgetragen wird) */
+    .hero-slider { position: relative; background: var(--rosa-hell); isolation: isolate; } /* eigene Ebene: Bilder bleiben unter Stempel & Badge */
+    .stempel, .klebe { z-index: 5; }
+    .hero-slider img {
+      position: absolute; inset: 0; z-index: 1;
+      clip-path: circle(0% at 50% 100%);
+      transform: scale(1.14);
+      transition: clip-path 1.1s cubic-bezier(.65, 0, .35, 1), transform 3.2s var(--ease);
+    }
+    .hero-slider img.aktiv { z-index: 2; clip-path: circle(150% at 50% 100%); transform: scale(1); }
+    .hero-slider img.vorher { z-index: 1; clip-path: circle(150% at 50% 100%); transform: scale(1); transition: none; }
+    .hero-label {
+      position: absolute; left: 50%; bottom: 18px; z-index: 3; transform: translateX(-50%);
+      background: rgba(255, 255, 255, .92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      border-radius: 999px; padding: 9px 18px 11px; overflow: hidden; white-space: nowrap;
+      font-weight: 800; font-size: 14px; box-shadow: 0 6px 18px rgba(74, 46, 34, .12);
+    }
+    .hero-label-text { display: inline-block; }
+    .hero-label-text.wechsel { animation: label-rein .5s var(--ease); }
+    @keyframes label-rein { from { opacity: 0; transform: translateY(8px); filter: blur(3px); } }
+    .hero-fortschritt {
+      position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+      background: var(--akzent); transform-origin: left; transform: scaleX(0);
+    }
+    .hero-fortschritt.laeuft { animation: fortschritt var(--dauer, 3s) linear forwards; }
+    @keyframes fortschritt { to { transform: scaleX(1); } }
     .stempel {
       position: absolute; left: -18px; bottom: 32px; width: 118px; height: 118px;
       background: var(--butter); border-radius: 50%; display: grid; place-items: center;
       box-shadow: var(--schatten);
     }
     .stempel svg.ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: drehen 22s linear infinite; }
-    .stempel text { font-family: var(--f-body); font-weight: 800; font-size: 11.5px; letter-spacing: .18em; fill: var(--schoko); text-transform: uppercase; }
+    .stempel text { font-family: var(--f-body); font-weight: 800; font-size: 10px; letter-spacing: .06em; fill: var(--schoko); text-transform: uppercase; }
     .stempel .herz { width: 34px; height: 34px; color: var(--akzent); fill: var(--akzent); stroke: var(--akzent); }
     @keyframes drehen { to { transform: rotate(360deg); } }
     .klebe {
@@ -213,8 +240,8 @@
       transition: transform .3s var(--ease), box-shadow .3s;
     }
     .produkt:hover { transform: translateY(-6px); box-shadow: var(--schatten-hoch); }
-    .produkt-bild { aspect-ratio: 1 / 1; overflow: hidden; background: var(--c, var(--rosa-hell)); padding: 14px; }
-    .produkt-bild img { width: 100%; height: 100%; object-fit: cover; border-radius: calc(var(--radius) - 8px); transition: transform .5s var(--ease); }
+    .produkt-bild { aspect-ratio: 4 / 5; overflow: hidden; background: var(--c, var(--rosa-hell)); }
+    .produkt-bild img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease); }
     .produkt:hover .produkt-bild img { transform: scale(1.04); }
     .produkt-text { padding: 20px 22px 24px; display: flex; flex-direction: column; flex: 1; }
     .produkt h3 { font-size: 26px; }
@@ -262,7 +289,7 @@
     /* ══════════════ GALERIE ══════════════ */
     .galerie-sektion { --bg: var(--rosa-hell); background: var(--bg); }
     .galerie { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (min-width: 820px) { .galerie { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 220px; gap: 16px; grid-auto-flow: dense; } }
+    @media (min-width: 820px) { .galerie { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 250px; gap: 16px; grid-auto-flow: dense; } }
     .galerie figure { margin: 0; border-radius: 18px; overflow: hidden; aspect-ratio: 1; background: var(--rosa); }
     @media (min-width: 820px) {
       .galerie figure { aspect-ratio: auto; }
@@ -278,9 +305,11 @@
     /* ══════════════ ÜBER MICH ══════════════ */
     .ueber-grid { display: grid; gap: 40px; align-items: center; }
     @media (min-width: 900px) { .ueber-grid { grid-template-columns: .85fr 1.15fr; gap: 72px; } }
-    .ueber-bild { position: relative; max-width: 420px; justify-self: center; width: 100%; }
-    .ueber-bild img { aspect-ratio: 4 / 5; object-fit: cover; width: 100%; border-radius: var(--radius); transform: rotate(-2deg); box-shadow: var(--schatten-hoch); border: 8px solid #fff; }
-    .ueber-bild::before { content: ""; position: absolute; inset: 18px -18px -18px 18px; background: var(--mint); border-radius: var(--radius); z-index: -1; transform: rotate(3deg); }
+    .ueber-bild { position: relative; max-width: 360px; justify-self: center; width: 100%; }
+    .ueber-bild::before { content: ""; position: absolute; inset: -14px 14px 14px -14px; background: var(--mint); border-radius: 50%; z-index: -1; }
+    .avatar { aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: var(--rosa-hell); border: 8px solid #fff; box-shadow: var(--schatten-hoch); display: grid; place-items: end center; }
+    .avatar svg { width: 78%; height: auto; fill: var(--rosa); }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
     .ueber-text h2 { font-size: clamp(34px, 6vw, 50px); margin: 6px 0 18px; }
     .ueber-text p { color: var(--schoko-hell); margin-bottom: 14px; font-size: 18px; }
     .signatur { font-family: var(--f-script); font-size: 38px; color: var(--akzent); margin-top: 8px; }
@@ -360,7 +389,7 @@
     }
     .hinweis .icon { width: 20px; height: 20px; color: #8a5a00; margin-top: 2px; }
 
-    .foto-zone {
+    .feld > .foto-zone {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 4px; padding: 24px 14px; text-align: center; cursor: pointer;
       border: 2px dashed var(--rand); border-radius: 16px; background: var(--creme);
@@ -410,9 +439,32 @@
     /* ══════════════ FOOTER ══════════════ */
     footer { --bg: var(--schoko); background: var(--bg); color: #f3e6da; margin-top: 16px; }
     .footer-map { width: 100%; height: 260px; display: block; border: none; filter: grayscale(20%) sepia(10%); }
+    .karte-platzhalter {
+      height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+      text-align: center; padding: 20px; background: #3d261c; color: #e9d8ca; font-size: 15px;
+    }
+    .karte-platzhalter .btn { min-height: 44px; padding: 10px 20px; font-size: 15px; }
+    .karte-platzhalter a:not(.btn) { color: var(--rosa); min-height: 0; }
+
+    /* Cookie-Banner */
+    .cookie-banner {
+      position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 500;
+      background: var(--karte); border: 1px solid var(--rand); border-radius: 20px; box-shadow: var(--schatten-hoch);
+      padding: 20px; display: none; gap: 16px; flex-direction: column;
+      animation: modal-rein .3s var(--ease);
+    }
+    .cookie-banner.offen { display: flex; }
+    .cookie-banner p { font-size: 15px; color: var(--schoko-hell); }
+    .cookie-banner strong { color: var(--schoko); display: block; font-size: 17px; margin-bottom: 4px; }
+    .cookie-banner a { color: var(--akzent); font-weight: 700; }
+    .cookie-knoepfe { display: flex; gap: 10px; flex-wrap: wrap; }
+    .cookie-knoepfe .btn { flex: 1; min-height: 46px; padding: 10px 18px; font-size: 15px; white-space: nowrap; }
+    @media (min-width: 760px) {
+      .cookie-banner { left: auto; right: 24px; bottom: 24px; max-width: 440px; }
+    }
     .footer-main { display: grid; gap: 36px; padding: 56px 20px 32px; }
     @media (min-width: 760px) { .footer-main { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
-    footer .logo { color: #fff; font-size: 34px; }
+    footer .logo { color: #fff; font-size: 34px; display: inline-block; min-height: 0; }
     footer .logo span, footer .logo small { color: var(--rosa); }
     footer h3 { font-family: var(--f-body); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--rosa); margin-bottom: 14px; }
     footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
@@ -430,7 +482,10 @@
     }
     .mobil-cta.zeigen { transform: none; }
     .mobil-cta .btn { width: 100%; box-shadow: 0 10px 30px rgba(74, 46, 34, .3); }
-    @media (min-width: 900px) { .mobil-cta { display: none; } }
+    @media (min-width: 900px) {
+      .mobil-cta { left: auto; right: 28px; bottom: 28px; }
+      .mobil-cta .btn { width: auto; padding: 16px 28px; }
+    }
 
     /* ══════════════ MODALS (modal-system, an kruemel-Stil angepasst) ══════════════ */
     .modal {
@@ -550,15 +605,22 @@
           </ul>
         </div>
         <div class="hero-bild rein">
-          <div class="bogen">
-            <!-- Foto ersetzen -->
-            <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=900&q=75&auto=format&fit=crop"
-                 alt="Rosa Drip-Torte mit bunten Streuseln und Glace-Cornet" width="900" height="1125" fetchpriority="high">
+          <!-- Hero-Slider: Bilder einfach hinzufügen/entfernen, data-label = Beschriftung -->
+          <div class="bogen hero-slider" id="hero-slider">
+            <img class="aktiv" src="img/hero-krone-mia.webp" data-label="Prinzessinnen-Torte" alt="Rosa Prinzessinnen-Torte «Mia» mit goldener Krone und Schleifen" width="896" height="1200" fetchpriority="high">
+            <img src="img/g-hochzeit-gold.webp" data-label="Hochzeitstorte" alt="Zweistöckige weisse Hochzeitstorte mit Goldrand und Perlen" width="896" height="1200">
+            <img src="img/g-elefant.webp" data-label="Taufe &amp; Babyparty" alt="Babyblaue Torte mit Elefant und Ballon" width="672" height="900">
+            <img src="img/g-hochzeit.webp" data-label="Rosen-Hochzeitstorte" alt="Dreistöckige Hochzeitstorte mit Rosen und Brautpaar" width="896" height="1184">
+            <img src="img/g-gugelhopf.webp" data-label="Gugelhopf-Turm" alt="Dreistöckiger Gugelhopf-Turm mit Blumen" width="896" height="1200">
+            <div class="hero-label" aria-hidden="true">
+              <span class="hero-label-text">Prinzessinnen-Torte</span>
+              <span class="hero-fortschritt"></span>
+            </div>
           </div>
           <div class="stempel" aria-hidden="true">
             <svg class="ring" viewBox="0 0 120 120">
               <defs><path id="kreis" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"/></defs>
-              <text><textPath href="#kreis">100% handgemacht · 100% handgemacht ·</textPath></text>
+              <text textLength="272" lengthAdjust="spacing"><textPath href="#kreis" textLength="272" lengthAdjust="spacing">handgemacht · mit Liebe · handgemacht · mit Liebe ·</textPath></text>
             </svg>
             <svg class="icon herz"><use href="#i-herz"/></svg>
           </div>
@@ -586,7 +648,7 @@
           <article class="produkt rein" style="--c: var(--rosa-hell)">
             <div class="produkt-bild">
               <!-- Foto ersetzen -->
-              <img src="https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=75&auto=format&fit=crop" alt="Bunte Regenbogentorte mit Streuseln" width="600" height="600" loading="lazy">
+              <img src="img/motiv-hase.webp" alt="Pfirsichfarbene Torte mit Hasen-Figur und Zuckerblumen zum 1. Geburtstag" width="672" height="900" loading="lazy">
             </div>
             <div class="produkt-text">
               <h3>Motivtorten</h3>
@@ -600,7 +662,7 @@
           <article class="produkt rein" style="--c: var(--butter-hell)">
             <div class="produkt-bild">
               <!-- Foto ersetzen -->
-              <img src="https://images.unsplash.com/photo-1559620192-032c4bc4674e?w=600&q=75&auto=format&fit=crop" alt="Weisse Torte mit Brombeeren und Blüten" width="600" height="600" loading="lazy">
+              <img src="img/foto-victoria.webp" alt="Lila Geburtstagstorte mit Bild-Topper und goldenen Kugeln" width="747" height="1000" loading="lazy" style="object-position:50% 20%">
             </div>
             <div class="produkt-text">
               <h3>Fototorten</h3>
@@ -614,7 +676,7 @@
           <article class="produkt rein" style="--c: var(--mint-hell)">
             <div class="produkt-bild">
               <!-- Foto ersetzen -->
-              <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=75&auto=format&fit=crop" alt="Reihe Cupcakes mit mintgrünem Frosting und Streuseln" width="600" height="600" loading="lazy">
+              <img src="img/cupcake-schoko.webp" alt="Schokoladen-Cupcake mit Schoko-Frosting" width="675" height="900" loading="lazy">
             </div>
             <div class="produkt-text">
               <h3>Cupcakes</h3>
@@ -627,8 +689,8 @@
           </article>
           <article class="produkt rein" style="--c: var(--rosa-hell)">
             <div class="produkt-bild">
-              <!-- Foto ersetzen (eigenes Cakepop-Foto) -->
-              <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=600&q=75&auto=format&fit=crop" alt="Rosa Süssigkeiten mit Erdbeeren" width="600" height="600" loading="lazy">
+              
+              <img src="img/cakepops-trio.webp" alt="Drei Cakepops in Schoko, Gelb und Weiss mit Streuseln" width="900" height="900" loading="lazy">
             </div>
             <div class="produkt-text">
               <h3>Cakepops</h3>
@@ -709,16 +771,21 @@
           <h2>Ein paar Lieblinge</h2>
           <p>Lass dich inspirieren – oder bring deine eigene Idee mit.</p>
         </div>
-        <!-- Alle Fotos ersetzen (eigene Torten) -->
         <div class="galerie rein">
-          <figure class="hoch"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&q=75&auto=format&fit=crop" alt="Schokoladentorte mit Ganache und Cremetupfen" loading="lazy" width="700" height="900"></figure>
-          <figure class="breit"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=75&auto=format&fit=crop" alt="Tortenstück mit Himbeeren" loading="lazy" width="900" height="600"></figure>
-          <figure><img src="https://images.unsplash.com/photo-1519869325930-281384150729?w=500&q=75&auto=format&fit=crop" alt="Vanille-Cupcakes mit Streuseln" loading="lazy" width="500" height="500"></figure>
-          <figure class="hoch"><img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=700&q=75&auto=format&fit=crop" alt="Weisse Etagentorte mit Beeren" loading="lazy" width="700" height="900"></figure>
-          <figure><img src="https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=500&q=75&auto=format&fit=crop" alt="Cupcake vor gelbem Hintergrund" loading="lazy" width="500" height="500"></figure>
-          <figure><img src="https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=500&q=75&auto=format&fit=crop" alt="Schoko-Cupcakes mit Karamell-Frosting" loading="lazy" width="500" height="500"></figure>
-          <figure class="breit"><img src="https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=900&q=75&auto=format&fit=crop" alt="Schwarzwälder Torte mit Kirschen" loading="lazy" width="900" height="600"></figure>
-          <figure class="nur-desktop"><img src="https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=500&q=75&auto=format&fit=crop" alt="Rosa Cupcake mit Kirsche und Streuseln" loading="lazy" width="500" height="500"></figure>
+          <figure class="hoch"><img src="img/g-hochzeit-gold.webp" alt="Zweistöckige weisse Hochzeitstorte mit Goldrand und Perlen" loading="lazy" width="896" height="1200"></figure>
+          <figure class="breit"><img style="object-position:50% 15%" src="img/g-rosen-drip.webp" alt="Drip-Torte in Rosa mit frischen Rosen und Macarons" loading="lazy" width="1200" height="896"></figure>
+          <figure><img src="img/g-elefant.webp" alt="Babyblaue Torte mit Elefant und Ballon" loading="lazy" width="672" height="900"></figure>
+          <figure class="hoch"><img src="img/g-hochzeit.webp" alt="Dreistöckige Hochzeitstorte mit Rosen und Brautpaar" loading="lazy" width="896" height="1184"></figure>
+          <figure><img src="img/g-geschenkbox.webp" alt="Zweistöckige Torte als Geschenkbox mit rosa Schleife" loading="lazy" width="672" height="900"></figure>
+          <figure><img src="img/g-zitronen-cupcake.webp" alt="Zitronen-Cupcake" loading="lazy" width="525" height="700"></figure>
+          <figure class="breit"><img style="object-position:50% 30%" src="img/g-paw-patrol.webp" alt="Paw-Patrol-Torte mit Figuren" loading="lazy" width="1200" height="896"></figure>
+          <figure><img src="img/g-minnie.webp" alt="Minnie-Mouse-Torte in Rot mit weissen Punkten" loading="lazy" width="525" height="700"></figure>
+          <figure class="breit"><img src="img/g-schmetterling.webp" alt="Rosa Torte mit Zucker-Schmetterlingen" loading="lazy" width="1200" height="896"></figure>
+          <figure><img src="img/g-arielle.webp" alt="Arielle-Meerjungfrau-Torte" loading="lazy" width="1100" height="825"></figure>
+          <figure class="hoch"><img src="img/g-gugelhopf.webp" alt="Dreistöckiger Gugelhopf-Turm mit Blumen" loading="lazy" width="896" height="1200"></figure>
+          <figure><img src="img/g-schildkroete.webp" alt="Unterwasser-Torte mit Schildkröte" loading="lazy" width="525" height="700"></figure>
+          <figure><img src="img/g-zoe.webp" alt="Pastell-Torte «Zoe» mit Fondant-Figur und Blumen" loading="lazy" width="525" height="700"></figure>
+          <figure><img src="img/g-wald-bennet.webp" alt="Waldtorte mit Fuchs zum 1. Geburtstag" loading="lazy" width="525" height="700"></figure>
         </div>
         <div class="galerie-cta rein">
           <!-- Instagram-Link einsetzen -->
@@ -731,8 +798,14 @@
     <section class="sektion" id="ueber-mich">
       <div class="wrap ueber-grid">
         <div class="ueber-bild rein">
-          <!-- Foto ersetzen (Portrait der Bäckerin) -->
-          <img src="https://images.unsplash.com/photo-1557925923-cd4648e211a0?w=700&q=75&auto=format&fit=crop" alt="Hand hält eine selbstgebackene Torte" width="700" height="875" loading="lazy">
+          <!-- Foto von Lex: Datei als img/lex.webp speichern und das <svg> unten ersetzen durch
+               <img src="img/lex.webp" alt="Lex in ihrer Backstube" width="800" height="800" loading="lazy"> -->
+          <div class="avatar">
+            <svg viewBox="0 0 200 200" role="img" aria-label="Platzhalter für ein Foto von Lex">
+              <circle cx="100" cy="78" r="38"/>
+              <path d="M30 196c4-44 34-70 70-70s66 26 70 70z"/>
+            </svg>
+          </div>
         </div>
         <div class="ueber-text rein">
           <span class="script">hoi zäme!</span>
@@ -851,7 +924,7 @@
               </div>
               <div class="feld">
                 <label for="bemerkungen">Bemerkungen</label>
-                <textarea id="bemerkungen" name="Bemerkungen" rows="3" aria-describedby="bem-hilfe"></textarea>
+                <textarea id="bemerkungen" name="Bemerkungen" rows="3" maxlength="1500" aria-describedby="bem-hilfe"></textarea>
                 <span class="hilfe" id="bem-hilfe">Allergien, Wünsche, Abholung/Lieferung …</span>
               </div>
             </fieldset>
@@ -896,7 +969,7 @@
           <details>
             <summary>Kann ich die Torte abholen oder wird geliefert? <svg class="icon"><use href="#i-plus"/></svg></summary>
             <!-- Abholung/Lieferung anpassen -->
-            <p>Abholung in [ORT] nach Vereinbarung. Lieferung in der Region ist auf Anfrage möglich.</p>
+            <p>Abholung an der Habshagstrasse 40 in Reinach BL nach Vereinbarung. Lieferung in der Region ist auf Anfrage möglich.</p>
           </details>
           <details>
             <summary>Backst du auch glutenfrei, laktosefrei oder vegan? <svg class="icon"><use href="#i-plus"/></svg></summary>
@@ -915,7 +988,14 @@
   <!-- ══════════════ FOOTER ══════════════ -->
   <footer class="bogen-oben">
     <!-- Adresse einsetzen -->
-    <iframe class="footer-map" src="https://maps.google.com/maps?q=Basel%2C%20Schweiz&output=embed" allowfullscreen loading="lazy" title="kruemel by Lex – Standort"></iframe>
+    <!-- Google Maps lädt erst nach Zustimmung (Cookie-Banner) -->
+    <div id="karte" data-src="https://www.google.com/maps?q=Habshagstrasse+40,+4153+Reinach+BL&amp;z=16&amp;hl=de&amp;output=embed">
+      <div class="karte-platzhalter">
+        <span>Die Karte wird von Google Maps geladen. Dabei werden Daten an Google übermittelt.</span>
+        <button type="button" class="btn btn-primaer" id="karte-laden">Karte anzeigen</button>
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=Habshagstrasse%2040%2C%204153%20Reinach%20BL" target="_blank" rel="noopener">oder direkt in Google Maps öffnen</a>
+      </div>
+    </div>
     <div class="wrap footer-main">
       <div>
         <a href="#top" class="logo">kruemel<span>.</span><small>by Lex</small></a>
@@ -932,7 +1012,7 @@
       <div>
         <h3>Abholung</h3>
         <ul>
-          <li><a href="#"><svg class="icon"><use href="#i-pin"/></svg>[Strasse Nr], [PLZ Ort]</a></li>
+          <li><a href="https://www.google.com/maps/search/?api=1&query=Habshagstrasse%2040%2C%204153%20Reinach%20BL" target="_blank" rel="noopener"><svg class="icon"><use href="#i-pin"/></svg>Habshagstrasse 40<br>4153 Reinach BL</a></li>
           <li><a href="#bestellen"><svg class="icon"><use href="#i-uhr"/></svg>Nach Vereinbarung</a></li>
         </ul>
       </div>
@@ -952,8 +1032,17 @@
   </footer>
 
   <!-- Mobile Bestell-Leiste -->
-  <div class="mobil-cta" id="mobil-cta">
+  <div class="mobil-cta" id="mobil-cta" aria-hidden="true">
     <a href="#bestellen" class="btn btn-primaer">Torte bestellen <svg class="icon"><use href="#i-pfeil"/></svg></a>
+  </div>
+
+  <!-- ══════════════ COOKIE-BANNER ══════════════ -->
+  <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie-Einstellungen">
+    <p><strong>Cookies &amp; externe Inhalte</strong>Diese Website verwendet nur technisch notwendige Speicherung. Mit «Alle akzeptieren» wird zusätzlich die Karte von Google Maps geladen. <a href="#" data-modal="datenschutz">Mehr erfahren</a></p>
+    <div class="cookie-knoepfe">
+      <button type="button" class="btn btn-sekundaer" id="cookie-notwendig">Nur notwendige</button>
+      <button type="button" class="btn btn-primaer" id="cookie-alle">Alle akzeptieren</button>
+    </div>
   </div>
 
   <!-- ══════════════ IMPRESSUM ══════════════ -->
@@ -962,7 +1051,7 @@
       <button class="modal-close" data-close aria-label="Schliessen"><svg class="icon"><use href="#i-x"/></svg></button>
       <h2 class="modal-title" id="impressum-titel">Impressum</h2>
       <div class="modal-body">
-        <p><strong>kruemel by Lex</strong><br>[INHABERIN]<br>[STRASSE NR]<br>[PLZ] [ORT]<br>Schweiz</p>
+        <p><strong>kruemel by Lex</strong><br>[INHABERIN]<br>Habshagstrasse 40<br>4153 Reinach BL<br>Schweiz</p>
         <p>Telefon: <a href="tel:+41610000000">061 000 00 00</a><br>E-Mail: <a href="mailto:info@beispiel.ch">info@beispiel.ch</a></p>
       </div>
     </div>
@@ -976,10 +1065,11 @@
       <div class="modal-body">
         <p><small>Letzte Aktualisierung: [DATUM]</small></p>
         <h3>1. Verantwortliche Person</h3>
-        <p><strong>[INHABERIN]</strong><br>[STRASSE NR], [PLZ] [ORT]<br>E-Mail: <a href="mailto:info@beispiel.ch">info@beispiel.ch</a></p>
+        <p><strong>[INHABERIN]</strong><br>Habshagstrasse 40, 4153 Reinach BL<br>E-Mail: <a href="mailto:info@beispiel.ch">info@beispiel.ch</a></p>
         <h3>2. Welche Daten ich bearbeite</h3>
         <p><strong>Bestellformular</strong><br>Wenn du das Bestellformular nutzt, werden deine Angaben (Name, Telefon, E-Mail, Bestelldetails und ein allfällig hochgeladenes Foto) über Google Apps Script an mein Google-Konto übermittelt und dort gespeichert (Google Ireland Ltd. / Google LLC, USA). Die Daten werden ausschliesslich zur Bearbeitung deiner Bestellung verwendet.</p>
-        <p><strong>Google Fonts &amp; Google Maps</strong><br>Diese Website lädt Schriften von Google Fonts und bindet eine Karte von Google Maps ein. Dabei wird deine IP-Adresse an Google übermittelt.</p>
+        <p><strong>Google Fonts &amp; Google Maps</strong><br>Diese Website lädt Schriften von Google Fonts. Die Karte von Google Maps wird erst geladen, wenn du zustimmst («Alle akzeptieren» oder «Karte anzeigen»). Dabei wird deine IP-Adresse an Google übermittelt und Google kann Cookies setzen.</p>
+        <p><strong>Lokale Speicherung</strong><br>Deine Cookie-Auswahl wird im Speicher deines Browsers (localStorage) abgelegt, damit der Hinweis nicht bei jedem Besuch erscheint. Es werden keine Tracking- oder Werbe-Cookies verwendet.</p>
         <p><strong>Technische Daten</strong><br>Beim Besuch dieser Website werden automatisch technische Informationen gespeichert (IP-Adresse, Browsertyp, Zugriffszeit). Diese sind für den sicheren Betrieb nötig.</p>
         <h3>3. Weitergabe an Dritte</h3>
         <p>Deine Daten werden nicht verkauft oder zu Werbezwecken weitergegeben.</p>
@@ -1012,10 +1102,63 @@
     let formSichtbar = false;
     function beimScrollen() {
       nav.classList.toggle('gescrollt', scrollY > 8);
-      mobilCta.classList.toggle('zeigen', scrollY > 600 && !formSichtbar);
+      const zeigen = scrollY > 600 && !formSichtbar && !bannerOffen();
+      mobilCta.classList.toggle('zeigen', zeigen);
+      mobilCta.setAttribute('aria-hidden', !zeigen);
+      mobilCta.querySelector('a').tabIndex = zeigen ? 0 : -1;
     }
     addEventListener('scroll', beimScrollen, { passive: true });
     new IntersectionObserver(([e]) => { formSichtbar = e.isIntersecting; beimScrollen(); }, { rootMargin: '0px 0px -20% 0px' }).observe(bestellSektion);
+
+    // ═══════════ Hero-Slider ═══════════
+    (() => {
+      const slider = document.getElementById('hero-slider');
+      const bilder = [...slider.querySelectorAll('img')];
+      const labelText = slider.querySelector('.hero-label-text');
+      const fortschritt = slider.querySelector('.hero-fortschritt');
+      const ANZEIGE_MS = 2000;   // wie lange ein Bild voll sichtbar ist
+      const UEBERGANG_MS = 1100; // Dauer der Kreis-Animation
+      const takt = ANZEIGE_MS + UEBERGANG_MS;
+      if (bilder.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      let index = 0, timer = null, pausiert = false;
+      fortschritt.style.setProperty('--dauer', takt + 'ms');
+
+      function fortschrittStarten() {
+        fortschritt.classList.remove('laeuft');
+        void fortschritt.offsetWidth; // Animation neu starten
+        fortschritt.classList.add('laeuft');
+      }
+      function weiter() {
+        const alt = bilder[index];
+        index = (index + 1) % bilder.length;
+        const neu = bilder[index];
+        alt.classList.add('vorher');
+        alt.classList.remove('aktiv');
+        neu.classList.add('aktiv');
+        setTimeout(() => alt.classList.remove('vorher'), UEBERGANG_MS + 50);
+        labelText.textContent = neu.dataset.label;
+        labelText.classList.remove('wechsel');
+        void labelText.offsetWidth;
+        labelText.classList.add('wechsel');
+        fortschrittStarten();
+      }
+      function starten() {
+        if (timer || pausiert || document.hidden) return;
+        fortschrittStarten();
+        timer = setInterval(weiter, takt);
+      }
+      function stoppen() {
+        clearInterval(timer); timer = null;
+        fortschritt.classList.remove('laeuft');
+      }
+      // Pause bei Hover und wenn der Tab nicht sichtbar ist
+      slider.addEventListener('mouseenter', () => { pausiert = true; stoppen(); });
+      slider.addEventListener('mouseleave', () => { pausiert = false; starten(); });
+      document.addEventListener('visibilitychange', () => document.hidden ? stoppen() : starten());
+      // Nur laufen lassen, wenn der Hero im Bild ist
+      new IntersectionObserver(([e]) => e.isIntersecting ? starten() : stoppen()).observe(slider);
+    })();
 
     // ═══════════ Einblenden beim Scrollen ═══════════
     const reinObs = new IntersectionObserver(eintraege => {
@@ -1054,12 +1197,36 @@
 
     document.getElementById('jahr').textContent = new Date().getFullYear();
 
+    // ═══════════ Cookie-Banner & Google Maps ═══════════
+    const banner = document.getElementById('cookie-banner');
+    function zustimmungLesen() { try { return localStorage.getItem('kruemel-cookies'); } catch { return null; } }
+    function zustimmungSpeichern(wert) { try { localStorage.setItem('kruemel-cookies', wert); } catch {} }
+    function bannerOffen() { return banner.classList.contains('offen'); }
+    function karteLaden() {
+      const box = document.getElementById('karte');
+      if (box.querySelector('iframe')) return;
+      box.innerHTML = '<iframe class="footer-map" src="' + box.dataset.src + '" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="kruemel by Lex – Standort"></iframe>';
+    }
+    function bannerSchliessen(wert) {
+      zustimmungSpeichern(wert);
+      banner.classList.remove('offen');
+      if (wert === 'alle') karteLaden();
+      beimScrollen();
+    }
+    const zustimmung = zustimmungLesen();
+    if (zustimmung === 'alle') karteLaden();
+    else if (!zustimmung) banner.classList.add('offen');
+    document.getElementById('cookie-alle').addEventListener('click', () => bannerSchliessen('alle'));
+    document.getElementById('cookie-notwendig').addEventListener('click', () => bannerSchliessen('notwendig'));
+    document.getElementById('karte-laden').addEventListener('click', karteLaden);
+
     // ═══════════ Bestellformular ═══════════
     // ← Web-App-URL aus Apps Script (Bereitstellen → Web-App)
     const API_URL = 'https://script.google.com/macros/s/AKfycbySJB6FRl6W2GFFWXCNtPsmByJoE9kxCIYyb0zIJuH7Edz20L8h5XC3iMmqi6CASLK54A/exec';
     const VORLAUF_TAGE = 10;
 
     const form = document.getElementById('bestellung');
+    const geladenUm = Date.now(); // Zeitfalle: Bots schicken in Sekundenbruchteilen ab
     const meldung = document.getElementById('meldung');
     const typFehler = document.getElementById('typ-fehler');
     const datumFeld = document.getElementById('datum');
@@ -1193,8 +1360,11 @@
       try {
         const daten = new URLSearchParams(new FormData(form));
         if (fotoDaten) daten.set('foto', fotoDaten);
+        daten.set('_t', Date.now() - geladenUm);
         const res = await fetch(API_URL, { method: 'POST', body: daten });
         if (!res.ok) throw new Error(res.status);
+        const antwortDaten = await res.json().catch(() => ({}));
+        if (antwortDaten.ok === false) throw new Error(antwortDaten.fehler || 'abgelehnt');
         form.classList.add('versteckt');
         const danke = document.getElementById('danke');
         danke.classList.remove('versteckt');
